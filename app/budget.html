@@ -3912,7 +3912,7 @@ function renderSettings(){
       ${MODE === 'server'
         ? `<p>Saved automatically to <code>${esc(DATA_PATH || 'data\\budget-data.json')}</code> on this drive. A backup copy is made each day in the <code>data\\backups</code> folder (last 30 days kept).</p>`
         : `<p class="neg"><b>The app was opened directly, so data is saved inside this browser on this computer only — not on your USB drive.</b></p>
-           <p>To save to the drive, close this tab and open <b>Start Budget Buddy.bat</b> instead. To move what you've entered so far: Export a backup below, start the app with Start Budget Buddy.bat, then Restore it.</p>`}
+           <p>To save to the drive, close this tab and open <b>Budget Buddy.exe</b> instead. To move what you've entered so far: Export a backup below, start Budget Buddy.exe, then Restore it.</p>`}
       <div class="toolbar mt">
         <button class="btn primary" onclick="fullBackup()" title="Your data plus every archived statement, in one .zip file">Full backup (.zip)</button>
         <button class="btn" onclick="exportJSON()">Data only (.json)</button>
@@ -3973,13 +3973,24 @@ function eraseAll(){
   S = defaultState(); PI = null; IMP = null; save(); render(); doneUndo('Everything erased.');
 }
 
+/** Running inside Budget Buddy.exe (a WebView2 window) instead of a browser tab. */
+const DESKTOP = !!(window.chrome && window.chrome.webview);
+/** The exe asks before closing its window: finish saving, then answer 'close' (or 'stay' if the user changes their mind). */
+async function bbDesktopClose(){
+  chrome.webview.postMessage('closing');
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; await doSave(); }
+  while (saving) await new Promise(r => setTimeout(r, 100));
+  const ok = !document.getElementById('status').classList.contains('err') || confirm('Your last change may not have saved. Close anyway?');
+  chrome.webview.postMessage(ok ? 'close' : 'stay');
+}
 async function quitApp(){
+  if (DESKTOP) return bbDesktopClose();
   if (saveTimer) { clearTimeout(saveTimer); await doSave(); }
   while (saving) await new Promise(r => setTimeout(r, 100));
   if (document.getElementById('status').classList.contains('err') && !confirm('Your last change may not have saved. Close anyway?')) return;
   try { await fetch('api/quit', {method:'POST', headers:{'X-Budget':'1'}}); } catch(e) {}
   document.body.innerHTML = `<main style="text-align:center;padding-top:80px"><h1>All saved ✓</h1><p class="muted">Budget Buddy has stopped. You can close this tab and safely remove your USB drive.</p>
-    <p class="muted small">To open it again, double-click <b>Start Budget Buddy.bat</b>.</p></main>`;
+    <p class="muted small">To open it again, double-click <b>Budget Buddy.exe</b>.</p></main>`;
 }
 
 /* ============================== password protection UI ============================== */
@@ -4008,7 +4019,7 @@ async function lockNow(){
   location.reload();
 }
 function passwordCard(){
-  if (!CAN_ENCRYPT) return `<div class="card"><h3>Password protection</h3><p class="muted">Not available when the app is opened directly. Start it with <b>Start Budget Buddy.bat</b> to use a password.</p></div>`;
+  if (!CAN_ENCRYPT) return `<div class="card"><h3>Password protection</h3><p class="muted">Not available when the app is opened directly. Start it with <b>Budget Buddy.exe</b> to use a password.</p></div>`;
   return KEY
     ? `<div class="card"><h3>🔒 Password protection is on</h3>
         <p class="muted">Your data file is encrypted. Anyone who finds the USB drive can't read it without your password. The app locks itself after 15 minutes without use.</p>
@@ -4563,7 +4574,7 @@ function startApp(){
   if (MODE !== 'server') {
     const b = document.getElementById('banner');
     b.style.display = 'block';
-    b.innerHTML = 'Opened without the USB helper — data is saved in this browser only. Use <b>Start Budget Buddy.bat</b> to save to your drive. <a href="#" onclick="go(\'settings\');return false">More info</a>';
+    b.innerHTML = 'Opened without the USB helper — data is saved in this browser only. Use <b>Budget Buddy.exe</b> to save to your drive. <a href="#" onclick="go(\'settings\');return false">More info</a>';
     setStatus('Browser storage');
   }
   if (LOCKED) showLockScreen(); else startApp();

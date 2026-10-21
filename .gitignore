@@ -2,9 +2,17 @@
 # Everything is ignored except the files listed with "!".
 /*
 !/.gitignore
+!/.github/
 !/app/
+!/desktop/
 !/README.txt
 !/Start Budget Buddy.bat
+
+# build output (the exe is attached to each GitHub release instead)
+/desktop/bin/
+/desktop/obj/
+*.exe
+*.dll
 
 # never share these, even if one ends up inside app/
 *.json

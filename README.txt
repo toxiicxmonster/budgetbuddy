@@ -4,22 +4,27 @@ BUDGET BUDDY
 Copy this whole "budget" folder onto your USB drive.
 
 TO START
-  Double-click "Start Budget Buddy.bat".
-  A small window opens and the app opens in your web browser.
-  Keep the small window open while you use the app.
-  When you're done, click "Close app" (top right) - then it's safe to remove the drive.
+  Double-click "Budget Buddy.exe". The app opens in its own window.
+  When you're done, close the window (or click "Close app", top right). It finishes
+  saving first - then it's safe to remove the drive.
   Everything is saved automatically to the "data" folder on the drive.
-  Got an updated version of the app? Just reload the browser tab.
+  Works on any Windows 10 or 11 PC, nothing to install.
+  Got an updated version of the app? Close the window and open Budget Buddy.exe again.
+
+  Prefer your web browser? "Start Budget Buddy.bat" opens the same app in a browser tab
+  instead (keep its small black window open while you use it). Use one or the other,
+  not both at once.
 
 WHAT'S IN THE FOLDER
-  Start Budget Buddy.bat  - starts the app (works on any Windows PC, nothing to install)
+  Budget Buddy.exe        - starts the app
+  Start Budget Buddy.bat  - starts the app in your web browser instead
   app\budget.html         - the app
-  app\server.ps1          - tiny helper that saves your data to the drive (localhost only, no internet)
-  data\budget-data.json   - YOUR DATA
+  app\server.ps1          - tiny helper the .bat uses to save your data (localhost only, no internet)
+  data\budget-data.json   - YOUR DATA (created the first time you open the app)
   data\backups\           - automatic daily backups (last 30 days)
   data\statements\        - your original statement files, filed by month (YYYY-MM)
-  Budget-Bills.xlsx       - your old spreadsheet (already loaded into the app)
-  examples\              - sample statements (DFCU, MCCU, Capital One)
+  Budget Buddy.exe keeps its window size and a small web cache in
+  %LOCALAPPDATA%\BudgetBuddy on each PC - never your budget data.
 
 FINDING YOUR WAY AROUND
   The bar at the top has the everyday pages: Month, Monthly Sheet, Budget, Bills,
@@ -184,5 +189,9 @@ NOTES
   - Only Windows is supported for saving to the drive. On a Mac you can still open
     app\budget.html in a browser, but data is then kept in that browser. Use
     "Backup & Settings > Full backup" to carry it over.
-  - If Windows warns about the .bat file, choose "More info" > "Run anyway".
+  - If Windows warns about Budget Buddy.exe or the .bat file ("Windows protected your
+    PC"), choose "More info" > "Run anyway". The app isn't signed, so Windows doesn't
+    recognize it yet.
+  - "Needs the WebView2 Runtime": it's part of Windows 11 and up-to-date Windows 10. If a
+    PC is missing it, the app offers Microsoft's download page (or use the .bat).
   - Safely eject the USB drive after closing the app.
