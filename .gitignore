@@ -1,0 +1,16 @@
+# Only the app is shared. Your data, backups and statements stay on the drive.
+# Everything is ignored except the files listed with "!".
+/*
+!/.gitignore
+!/app/
+!/README.txt
+!/Start Budget Buddy.bat
+
+# never share these, even if one ends up inside app/
+*.json
+*.csv
+*.pdf
+*.ofx
+*.qfx
+*.xlsx
+*.zip
